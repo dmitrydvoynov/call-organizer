@@ -41,18 +41,43 @@ body {
   margin: 30px 0;
 }
 
+/*page clases*/
+
 #add-call-container {
   display: block;
   clear: left;
+}
+
+#add-call-container .form-group{
+  vertical-align: top;
 }
 
 #add-call-container  input{
   max-width:120px;
 }
 
+#add-call-container input[name="nameField"]{
+  max-width:170px;
+}
+
+#add-call-container input[name="phoneNumberField"]{
+  max-width:230px;
+}
+
+#add-call-container input[name="timeField"]{
+  max-width:70px;
+}
+
+
 #calls-list-container {
   display: block;
   clear: left;
+}
+
+/*General classes*/
+
+.text-warning {
+  color: red;
 }
 
 /* Responsive: Portrait tablets and up */

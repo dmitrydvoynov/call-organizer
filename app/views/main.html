@@ -1,62 +1,98 @@
-<div class="row">
+<div class="row" ng-controller="MainCtrl">
     <div id="next-call-container" class="col-sm-3">
         <h2>Next call</h2>
 
-        <p> Name Phone time </p>
+        <span ng-show="!nextCall">Congratulations! No next call today</span>
+
+        <div class="panel panel-default" ng-show="nextCall">
+            <div class="panel-body">
+                Name: {{nextCall.name}}<br/>
+                {{nextCall.phone}} <br/>
+                Time: {{nextCall.time | formatTime}}
+            </div>
+        </div>
     </div>
     <div class="col-sm-9">
         <div id="add-call-container">
             <h2>Add call</h2>
 
-            <form class="form-inline">
-                <div class="form-group col-sm-3 has-success">
-                    <label class="sr-only" for="name">Name</label>
-                    <input class="form-control" type="text" id="name" placeholder="Name">
+            <form name="newCallForm" class="form-inline">
+                <span ng-show="newCallForm.$invalid && !newCallForm.$pristine" class="text-warning clearfix">Please fix form errors</span>
+                <div class="form-group"
+                     ng-class="newCallForm.nameField.$invalid && !newCallForm.$pristine?'has-error':''">
+                    <label class="sr-only" for="nameField">Name</label>
+                    <input class="form-control" ng-model="newCall.name" type="text" id="nameField" name="nameField"
+                           placeholder="Name" maxlength="30" required>
+                    <ul ng-show="newCallForm.nameField.$invalid && !newCallForm.$pristine" class="list-unstyled">
+                        <li ng-show="newCallForm.nameField.$error.required">Name is required</li>
+                        <li ng-show="newCallForm.nameField.$error.maxlength">Max length is 30</li>
+                    </ul>
                 </div>
-                <div class="form-group col-sm-3 has-success">
-                    <label class="sr-only" for="phoneNumber">Phone Number</label>
-                    <input class="form-control" type="tel" id="phoneNumber" placeholder="Phone Number">
+                <div class="form-group"
+                     ng-class="newCallForm.phoneNumberField.$invalid && !newCallForm.$pristine?'has-error':''">
+                    <label class="sr-only" for="phoneNumberField">Phone Number</label>
+                    <input class="form-control" input-phone-number ng-model="newCall.phone" id="phoneNumberField"
+                           name="phoneNumberField" placeholder="+(99)111 222 333" required>
+                    <ul ng-show="newCallForm.phoneNumberField.$invalid && !newCallForm.$pristine" class="list-unstyled">
+                        <li ng-show="newCallForm.phoneNumberField.$error.required">Phone number is required</li>
+                        <li ng-show="newCallForm.phoneNumberField.$error.parse">Incorrect format</li>
+                    </ul>
                 </div>
-                <div class="form-group col-sm-3 has-error">
-                    <label class="sr-only" for="time">Time</label>
-                    <input class="form-control has-error" type="time" id="time" placeholder="Time">
+                <div class="form-group "
+                     ng-class="newCallForm.timeField.$invalid && !newCallForm.$pristine?'has-error':''">
+                    <label class="sr-only" for="timeField">Time</label>
+                    <input class="form-control" placeholder="hh:mm" input-time ng-model="newCall.time" id="timeField" name="timeField">
+                    <ul ng-show="newCallForm.phoneNumberField.$invalid && !newCallForm.$pristine" class="list-unstyled">
+                        <li ng-show="newCallForm.phoneNumberField.$error.parse">Incorrect format</li>
+                        <li ng-show="newCallForm.phoneNumberField.$error.inputTime">Incorrect format</li>
+                    </ul>
+                </div>
+                <div class="form-group pull-right">
+                    <button type="submit" class="btn btn-default pull-right" ng-click="add(newCall)"
+                            ng-disabled="!newCallForm.$valid"><i class="glyphicon glyphicon-plus"></i></button>
 
-                    <p>Incorrect format!</p>
                 </div>
-                <button type="submit" class="btn btn-default col-sm-1 col-md-offset-2"><i
-                        class="glyphicon glyphicon-plus"></i></button>
             </form>
-        </div>
-        <div id="calls-list-container">
-            <h2>Calls list</h2>
+            <div id="calls-list-container">
+                <h2>Calls list</h2>
 
-            <table class="table table-striped table-condensed">
-                <thead>
-                <tr>
-                    <th> <a ><i class="glyphicon glyphicon-chevron-down"></i></a>Name</th>
-                    <th>Phone</th>
-                    <th><a ><i class="glyphicon glyphicon-chevron-up"></i></a>Time</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Test name</td>
-                    <td>00-26-26-26</td>
-                    <td>13:46</td>
-                    <td>Delete</td>
-                    <td><input type="checkbox"/></td>
-                </tr>
-                </tbody>
-            </table>
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th><a table-sort table-sort-type="name"></a>Name</th>
+                        <th>Phone</th>
+                        <th><a table-sort table-sort-type="time"></a>Time</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="call in calls | filter: filter | orderBy: sortType: sortReverse">
+                        <td>{{call.name}}</td>
+                        <td>{{call.phone}}</td>
+                        <td>{{call.time | formatTime}}</td>
+                        <td><a ng-click="delete(call.id)"><i class="glyphicon glyphicon-trash"></i></a></td>
+                        <td><input type="checkbox" disabled ng-checked="compareTime(call.time, dateToTime(getDate()))< 0"/></td>
+                    </tr>
+                    </tbody>
+                </table>
 
-            <div class="text-center">
-            <button class="btn btn-default" type="submit">All</button>
-            <button class="btn btn-default" type="submit">Next</button>
-            <button class="btn btn-default" type="submit">Finished</button>
+
+                <div class="btn-toolbar" role="toolbar">
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-default" ng-click="filterCalls('all')"
+                                ng-class="{'active':filterName=='all'}" type="submit">All
+                        </button>
+                        <button class="btn btn-default" ng-click="filterCalls('next')"
+                                ng-class="{'active':filterName=='next'}" type="submit">Next
+                        </button>
+                        <button class="btn btn-default" ng-click="filterCalls('finished')"
+                                ng-class="{'active':filterName=='finished'}" type="submit">Finished
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
 
-</div>
+    </div>
