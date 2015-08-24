@@ -1,6 +1,7 @@
 'use strict';
 
 /**
+ * Use local storea ge to store calls.
  * @ngdoc service
  * @name callOrganizerApp.Calls
  * @description
@@ -11,6 +12,11 @@ angular.module('callOrganizerApp')
     .factory('Calls', ['localStorageService',
         function (localStorageService) {
             return {
+                /**
+                 * Retrieve list of all calls from local storage.
+                 * Each call has it's own id.
+                 * @returns {*}
+                 */
                 list: function () {
                     var calls = localStorageService.get('calls');
                     if (calls == null) {
@@ -18,9 +24,13 @@ angular.module('callOrganizerApp')
                     }
                     return calls;
                 },
-                getNextCall: function (date) {
+                /**
+                 * In the ordered list of calls (by time ASC) find first record where time of call > current time and return that record. 
+                 * @param currentTime
+                 * @returns {*}
+                 */
+                getNextCall: function (currentTime) {
                     var result = null;
-                    var currentTime = dateToTime(date);
                     var calls = this.list();
                     for (var i = 0; i < calls.length; i++) {
                         var call = calls[i];
@@ -35,6 +45,10 @@ angular.module('callOrganizerApp')
                     }
                     return result;
                 },
+                /**
+                 * Save new call in the list of call. The new unuque identifier will be assigned to call object.
+                 * @param newCall
+                 */
                 add: function (newCall) {
                     var calls = this.list();
                     //search for max id
@@ -48,12 +62,16 @@ angular.module('callOrganizerApp')
                     calls.push(newCall);
                     localStorageService.set('calls', calls);
                 },
+                /**
+                 * Remove call from the list
+                 * @param id
+                 */
                 delete: function (id) {
                     var calls = this.list();
                     var elementId = -1;
                     for (var i = 0; i < calls.length; i++) {
                         if (calls[i].id == id) {
-                            elementId = id;
+                            elementId = i;
                             break;
                         }
                     }

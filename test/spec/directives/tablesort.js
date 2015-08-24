@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Directive: glyphiconSort', function () {
+describe('Directive: tableSort', function () {
 
   // load the directive's module
   beforeEach(module('callOrganizerApp'));
@@ -12,9 +12,14 @@ describe('Directive: glyphiconSort', function () {
     scope = $rootScope.$new();
   }));
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<glyphicon-sort-class></glyphicon-sort-class>');
+  it('should add new icon', inject(function ($compile) {
+    element = angular.element('<a table-sort table-sort-type="name"></a>');
+    scope.sortReverse = false;
+    scope.sortTypeName = 'name';
+    scope.sortType = 'name';
     element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the glyphiconSortClass directive');
+    scope.$digest();
+    expect(element.find('i').length).toBe(1);
+    expect(element.find('i').hasClass('glyphicon-chevron-up')).toBeTruthy();
   }));
 });

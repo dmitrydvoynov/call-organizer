@@ -1,6 +1,11 @@
 'use strict';
 
 /**
+ * Helps to add sort icons to table header.
+ * The directive requires the controller to have following fileds in scope:
+ * scope.sortTypeName
+ * scope.sortReverse
+ * scope.sortType
  * @ngdoc directive
  * @name callOrganizerApp.directive:glyphiconSortClass
  * @description
@@ -18,9 +23,9 @@ angular.module('callOrganizerApp')
                     scope.sortReverse = (scope.sortTypeName === attrs.tableSortType) ? !scope.sortReverse : false;
                     scope.sortTypeName = attrs.tableSortType;
 
-                    if(scope.sortTypeName === 'time'){
+                    if (scope.sortTypeName === 'time') {
                         scope.sortType = getCallTimeAsMinutes;
-                    }else {
+                    } else {
                         scope.sortType = scope.sortTypeName;
                     }
                     scope.$apply();

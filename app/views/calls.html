@@ -1,4 +1,4 @@
-<div class="row" ng-controller="MainCtrl">
+<div class="row" ng-controller="CallsCtrl">
     <div id="next-call-container" class="col-sm-3">
         <h2>Next call</h2>
 
@@ -18,6 +18,7 @@
 
             <form name="newCallForm" class="form-inline">
                 <span ng-show="newCallForm.$invalid && !newCallForm.$pristine" class="text-warning clearfix">Please fix form errors</span>
+
                 <div class="form-group"
                      ng-class="newCallForm.nameField.$invalid && !newCallForm.$pristine?'has-error':''">
                     <label class="sr-only" for="nameField">Name</label>
@@ -41,7 +42,8 @@
                 <div class="form-group "
                      ng-class="newCallForm.timeField.$invalid && !newCallForm.$pristine?'has-error':''">
                     <label class="sr-only" for="timeField">Time</label>
-                    <input class="form-control" placeholder="hh:mm" input-time ng-model="newCall.time" id="timeField" name="timeField">
+                    <input class="form-control" placeholder="hh:mm" input-time ng-model="newCall.time" id="timeField"
+                           name="timeField">
                     <ul ng-show="newCallForm.phoneNumberField.$invalid && !newCallForm.$pristine" class="list-unstyled">
                         <li ng-show="newCallForm.phoneNumberField.$error.parse">Incorrect format</li>
                         <li ng-show="newCallForm.phoneNumberField.$error.inputTime">Incorrect format</li>
@@ -72,7 +74,8 @@
                         <td>{{call.phone}}</td>
                         <td>{{call.time | formatTime}}</td>
                         <td><a ng-click="delete(call.id)"><i class="glyphicon glyphicon-trash"></i></a></td>
-                        <td><input type="checkbox" disabled ng-checked="compareTime(call.time, dateToTime(getDate()))< 0"/></td>
+                        <td><input type="checkbox" disabled
+                                   ng-checked="compareTime(call.time, dateToTime(getDate()))< 0"/></td>
                     </tr>
                     </tbody>
                 </table>

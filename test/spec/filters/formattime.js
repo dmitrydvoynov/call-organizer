@@ -11,9 +11,13 @@ describe('Filter: formatTime', function () {
     formatTime = $filter('formatTime');
   }));
 
-  it('should return the input prefixed with "formatTime filter:"', function () {
-    var text = 'angularjs';
-    expect(formatTime(text)).toBe('formatTime filter: ' + text);
+  it('should format time', function () {
+    var time = { hours:13, minutes:24};
+    expect(formatTime(time)).toBe('13:24');
+  });
+  it('should skip empty values', function () {
+    var time;
+    expect(formatTime(time)).toBe('');
   });
 
 });

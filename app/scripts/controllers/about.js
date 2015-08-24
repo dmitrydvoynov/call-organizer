@@ -8,6 +8,6 @@
  * Controller of the callOrganizerApp
  */
 angular.module('callOrganizerApp')
-  .controller('AboutCtrl', function () {
+    .controller('AboutCtrl', function () {
 
-  });
+    });

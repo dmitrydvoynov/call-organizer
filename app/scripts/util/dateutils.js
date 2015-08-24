@@ -1,12 +1,12 @@
-function dateToTime(date) {
+dateToTime = function (date) {
     return {
         hours: date.getHours(),
         minutes: date.getMinutes()
     }
 }
 
-function getCallTimeAsMinutes(call) {
-    return call.time.hours*60 + call.time.minutes;
+getCallTimeAsMinutes = function (call) {
+    return call.time.hours * 60 + call.time.minutes;
 }
 
 compareTime = function (time1, time2) {
