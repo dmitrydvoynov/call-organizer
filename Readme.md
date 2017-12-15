@@ -13,3 +13,5 @@ Run `grunt` for building and `grunt serve` for preview. I should open browser at
 ## Testing
 
 Running `grunt test` will run the unit tests with karma.
+
+## We also have a project in github
